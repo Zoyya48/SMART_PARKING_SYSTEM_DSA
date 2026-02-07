@@ -4,7 +4,7 @@ app.py - Flask REST API for Smart Parking System
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from ParkingSystem import ParkingSystem
+from backend.ParkingSystem import ParkingSystem
 from datetime import datetime
 
 app = Flask(__name__)
