@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Parking System - Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🅿️</span>
+                    <span class="logo-text">Smart Parking</span>
+                    <span class="badge">ADMIN</span>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Active Requests</span>
+                        <span class="stat-value" id="activeRequests">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Queue</span>
+                        <span class="stat-value" id="queueSize">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Stack Size</span>
+                        <span class="stat-value" id="stackSize">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <div class="container">
+            
+            <!-- Control Panel -->
+            <section class="control-panel">
+                <h2 class="section-title">Control Panel</h2>
+                <div class="control-grid">
+                    <!-- Register Vehicle -->
+                    <div class="control-card">
+                        <h3>Register Vehicle</h3>
+                        <input type="text" id="vehicleId" placeholder="Vehicle ID (e.g., LHE-1234)" class="input-field">
+                        <select id="preferredZone" class="input-field">
+                            <option value="">Select Zone</option>
+                            <option value="ZONE_A">Downtown</option>
+                            <option value="ZONE_B">Uptown</option>
+                            <option value="ZONE_C">Suburbs</option>
+                            <option value="ZONE_D">Industrial</option>
+                        </select>
+                        <button onclick="registerVehicle()" class="btn-primary">Register</button>
+                    </div>
+
+                    <!-- Create Request -->
+                    <div class="control-card">
+                        <h3>Create Request</h3>
+                        <input type="text" id="requestVehicleId" placeholder="Vehicle ID" class="input-field">
+                        <select id="requestZone" class="input-field">
+                            <option value="">Select Zone</option>
+                            <option value="ZONE_A">Downtown</option>
+                            <option value="ZONE_B">Uptown</option>
+                            <option value="ZONE_C">Suburbs</option>
+                            <option value="ZONE_D">Industrial</option>
+                        </select>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="autoAllocate" checked>
+                            <label for="autoAllocate">Auto Allocate</label>
+                        </div>
+                        <button onclick="createRequest()" class="btn-primary">Create Request</button>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="control-card">
+                        <h3>Quick Actions</h3>
+                        <input type="text" id="actionRequestId" placeholder="Request ID" class="input-field">
+                        <div class="button-group">
+                            <button onclick="allocateParking()" class="btn-secondary">Allocate</button>
+                            <button onclick="occupyParking()" class="btn-secondary">Occupy</button>
+                        </div>
+                        <div class="button-group">
+                            <button onclick="releaseParking()" class="btn-success">Release</button>
+                            <button onclick="cancelRequest()" class="btn-danger">Cancel</button>
+                        </div>
+                    </div>
+
+                    <!-- Rollback Control -->
+                    <div class="control-card">
+                        <h3>Rollback Operations</h3>
+                        <p class="info-text">Stack-based LIFO rollback</p>
+                        <input type="number" id="rollbackK" placeholder="Number of operations" value="1" min="1" class="input-field">
+                        <button onclick="performRollback()" class="btn-warning">⏪ Rollback</button>
+                        <button onclick="viewStack()" class="btn-secondary">View Stack</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- State Machine Visualizer -->
+            <section class="state-machine-section">
+                <h2 class="section-title">Request Lifecycle State Machine</h2>
+                <div class="state-machine">
+                    <div class="state-node" data-state="REQUESTED">
+                        <div class="state-icon">📝</div>
+                        <div class="state-name">REQUESTED</div>
+                    </div>
+                    <div class="state-arrow">→</div>
+                    <div class="state-node" data-state="ALLOCATED">
+                        <div class="state-icon">🎯</div>
+                        <div class="state-name">ALLOCATED</div>
+                    </div>
+                    <div class="state-arrow">→</div>
+                    <div class="state-node" data-state="OCCUPIED">
+                        <div class="state-icon">🚗</div>
+                        <div class="state-name">OCCUPIED</div>
+                    </div>
+                    <div class="state-arrow">→</div>
+                    <div class="state-node" data-state="RELEASED">
+                        <div class="state-icon">✅</div>
+                        <div class="state-name">RELEASED</div>
+                    </div>
+                </div>
+                <div class="state-cancel-path">
+                    <div class="state-arrow-down">↓</div>
+                    <div class="state-node cancelled" data-state="CANCELLED">
+                        <div class="state-icon">❌</div>
+                        <div class="state-name">CANCELLED</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Live Requests -->
+            <section class="live-requests-section">
+                <h2 class="section-title">Live Requests</h2>
+                <div class="requests-container" id="liveRequests">
+                    <div class="empty-state">No active requests</div>
+                </div>
+            </section>
+
+            <!-- Zone Status -->
+            <section class="zones-section">
+                <h2 class="section-title">Zone Status & Graph</h2>
+                <div class="zones-grid" id="zonesGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Queue Visualizer -->
+            <section class="queue-section">
+                <h2 class="section-title">Request Queue (FIFO)</h2>
+                <div class="queue-container">
+                    <div class="queue-label">FRONT →</div>
+                    <div class="queue-items" id="queueItems">
+                        <div class="empty-state">Queue is empty</div>
+                    </div>
+                    <div class="queue-label">← REAR</div>
+                </div>
+                <button onclick="processQueue()" class="btn-primary">Process Next (Dequeue)</button>
+            </section>
+
+            <!-- Analytics Dashboard -->
+            <section class="analytics-section">
+                <h2 class="section-title">Analytics Dashboard</h2>
+                <div class="analytics-grid" id="analyticsGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Modal for Stack View -->
+    <div id="stackModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Rollback Stack (LIFO)</h3>
+                <button onclick="closeModal()" class="close-btn">×</button>
+            </div>
+            <div class="modal-body" id="stackContent">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
