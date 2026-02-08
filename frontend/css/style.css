@@ -267,6 +267,7 @@ body {
 .btn-primary:hover {
     transform: translateY(-3px);
     box-shadow: 0 15px 40px rgba(240, 147, 251, 0.6);
+    filter:brightness(1.2);
 }
 
 .btn-secondary {
