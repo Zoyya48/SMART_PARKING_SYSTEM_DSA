@@ -71,16 +71,19 @@ body {
 .car1 {
     top: 20%;
     animation-delay: 0s;
+    color: rgba(100, 200, 255, 0.8);
 }
 
 .car2 {
     top: 50%;
     animation-delay: 5s;
+    color: rgba(255, 150, 200, 0.8);
 }
 
 .car3 {
     top: 75%;
     animation-delay: 10s;
+    color: rgba(150, 255, 150, 0.8);
 }
 
 @keyframes driveCar {
