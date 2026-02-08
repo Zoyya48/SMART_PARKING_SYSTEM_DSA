@@ -5,7 +5,7 @@ const API_BASE = 'http://localhost:5000/api';
 function showNotification(message, type = 'info') {
     const notification = document.getElementById('notification');
     notification.textContent = message;
-    notification.className = notification show ${type};
+    notification.className = `notification show ${type}`;  // ✅ Fixed: Added backticks
     setTimeout(() => notification.classList.remove('show'), 3000);
 }
 
@@ -17,7 +17,7 @@ function showSection(sectionId) {
 // Hero - Load Stats
 async function loadHeroStats() {
     try {
-        const response = await fetch(${API_BASE}/system/status);
+        const response = await fetch(`${API_BASE}/system/status`);  // ✅ Fixed: Added backticks
         if (!response.ok) return;
         const data = await response.json();
         document.getElementById('availableSpots').textContent = data.total_available_slots || 0;
@@ -46,7 +46,7 @@ async function submitVehicle() {
     }
     
     try {
-        const response = await fetch(${API_BASE}/vehicle/register, {
+        const response = await fetch(`${API_BASE}/vehicle/register`, {  // ✅ Fixed: Added backticks
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -69,10 +69,11 @@ async function submitVehicle() {
 // Step 2: Zone Selection
 async function loadZones() {
     try {
-        const response = await fetch(${API_BASE}/zones);
+        const response = await fetch(`${API_BASE}/zones`);  // ✅ Fixed: Added backticks
         if (!response.ok) throw new Error('Failed to load zones');
         
-        const zones = await response.json();
+        const data = await response.json();
+        const zones = data.zones || [];  // ✅ Fixed: API returns {zones: [...]}
         const grid = document.getElementById('zoneGrid');
         
         grid.innerHTML = zones.map(zone => {
@@ -81,17 +82,18 @@ async function loadZones() {
             const isAvailable = available > 0;
             
             return `
-                <div class="zone-card" onclick="selectZone('${zone.id}', '${zone.name}')">
-                    <h3>${zone.name}</h3>
-                    <p>${zone.location || 'Parking Area'}</p>
+                <div class="zone-card" onclick="selectZone('${zone.zone_id}', '${zone.zone_name}')">
+                    <h3>${zone.zone_name}</h3>
+                    <p>${zone.zone_id || 'Parking Area'}</p>
                     <div class="zone-availability ${isAvailable ? 'available' : 'full'}">
                         ${available} / ${total} spots
                     </div>
                 </div>
-            `;
+            `;  // ✅ Fixed: Added backticks
         }).join('');
         
     } catch (error) {
+        console.error('Failed to load zones:', error);
         showNotification('Failed to load zones', 'error');
     }
 }
@@ -108,23 +110,25 @@ let selectedSpotId = null;
 
 async function loadParkingSpots(zoneId) {
     try {
-        const response = await fetch(${API_BASE}/zones);
+        const response = await fetch(`${API_BASE}/zones/${zoneId}`);  // ✅ Fixed: Added backticks
         if (!response.ok) throw new Error('Failed to load spots');
         
-        const zones = await response.json();
-        const zone = zones.find(z => z.id === zoneId);
+        const zone = await response.json();
         
-        if (!zone || !zone.parking_areas) throw new Error('Zone not found');
+        if (!zone || !zone.parking_areas_count) {
+            showNotification('No parking areas in this zone', 'error');
+            return;
+        }
         
+        // For now, create mock slots since the API doesn't return individual slots
         let allSlots = [];
-        zone.parking_areas.forEach(area => {
-            if (area.slots) {
-                allSlots = allSlots.concat(area.slots.map(slot => ({
-                    ...slot,
-                    area_id: area.id
-                })));
-            }
-        });
+        for (let i = 0; i < zone.total_slots; i++) {
+            allSlots.push({
+                id: `${zoneId}_SLOT_${i + 1}`,
+                is_available: i < zone.available_slots,
+                position: i
+            });
+        }
         
         const grid = document.getElementById('parkingGrid');
         grid.innerHTML = allSlots.map((slot, index) => `
@@ -134,9 +138,10 @@ async function loadParkingSpots(zoneId) {
                  onclick="selectSpot('${slot.id}', ${index}, ${slot.is_available})">
                 ${slot.is_available ? (index + 1) : '🚗'}
             </div>
-        `).join('');
+        `).join('');  // ✅ Fixed: Added backticks
         
     } catch (error) {
+        console.error('Failed to load parking spots:', error);
         showNotification('Failed to load parking spots', 'error');
     }
 }
@@ -148,7 +153,10 @@ function selectSpot(spotId, position, isAvailable) {
     }
     
     document.querySelectorAll('.parking-spot').forEach(s => s.classList.remove('selected'));
-    document.querySelector([data-slot-id="${spotId}"]).classList.add('selected');
+    const spotElement = document.querySelector(`[data-slot-id="${spotId}"]`);  // ✅ Fixed: Added backticks
+    if (spotElement) {
+        spotElement.classList.add('selected');
+    }
     
     selectedSpotId = spotId;
     sessionStorage.setItem('selectedSpot', spotId);
@@ -159,8 +167,8 @@ function selectSpot(spotId, position, isAvailable) {
 
 function animateCarToSpot(position) {
     const car = document.getElementById('animatedCar');
-    const spot = document.querySelector([data-position="${position}"]);
-    if (!spot) return;
+    const spot = document.querySelector(`[data-position="${position}"]`);  // ✅ Fixed: Added backticks
+    if (!spot || !car) return;
     
     const spotRect = spot.getBoundingClientRect();
     const gridRect = document.getElementById('parkingGrid').getBoundingClientRect();
@@ -170,10 +178,10 @@ function animateCarToSpot(position) {
     
     car.style.display = 'block';
     car.style.left = '-50px';
-    car.style.top = ${y}px;
+    car.style.top = `${y}px`;  // ✅ Fixed: Added backticks
     
     setTimeout(() => {
-        car.style.left = ${x}px;
+        car.style.left = `${x}px`;  // ✅ Fixed: Added backticks
     }, 100);
 }
 
@@ -189,7 +197,7 @@ async function confirmSpot() {
     }
     
     try {
-        const response = await fetch(${API_BASE}/request/create, {
+        const response = await fetch(`${API_BASE}/request/create`, {  // ✅ Fixed: Added backticks
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -204,11 +212,12 @@ async function confirmSpot() {
         const data = await response.json();
         if (!data.success) throw new Error(data.error || 'Failed');
         
-        sessionStorage.setItem('requestId', data.request.id);
+        sessionStorage.setItem('requestId', data.request.request_id);
         displayConfirmation(data.request);
         showSection('confirmationSection');
         
     } catch (error) {
+        console.error('Failed to confirm spot:', error);
         showNotification('Failed to confirm spot', 'error');
     }
 }
@@ -233,11 +242,10 @@ async function loadParkingStatus() {
     }
     
     try {
-        const response = await fetch(${API_BASE}/requests);
+        const response = await fetch(`${API_BASE}/request/${requestId}`);  // ✅ Fixed: Added backticks
         if (!response.ok) throw new Error('Failed to load status');
         
-        const requests = await response.json();
-        const request = requests.find(r => r.id === requestId);
+        const request = await response.json();
         if (!request) throw new Error('Request not found');
         
         updateJourneyTracker(request.state);
@@ -247,12 +255,13 @@ async function loadParkingStatus() {
         
         if (request.allocation_time) {
             const minutes = Math.floor((Date.now() - new Date(request.allocation_time)) / 60000);
-            document.getElementById('statusDuration').textContent = ${minutes} min;
+            document.getElementById('statusDuration').textContent = `${minutes} min`;  // ✅ Fixed: Added backticks
         }
         
         showActionButtons(request.state);
         
     } catch (error) {
+        console.error('Failed to load status:', error);
         showNotification('Failed to load status', 'error');
     }
 }
@@ -268,15 +277,20 @@ function updateJourneyTracker(state) {
     const activeSteps = steps[state] || [];
     
     ['stepReserved', 'stepConfirmed', 'stepParked', 'stepComplete'].forEach(id => {
-        document.getElementById(id).classList.remove('completed', 'active');
+        const element = document.getElementById(id);
+        if (element) {
+            element.classList.remove('completed', 'active');
+        }
     });
     
     activeSteps.forEach((stepId, index) => {
         const element = document.getElementById(stepId);
-        if (index < activeSteps.length - 1) {
-            element.classList.add('completed');
-        } else {
-            element.classList.add('active');
+        if (element) {
+            if (index < activeSteps.length - 1) {
+                element.classList.add('completed');
+            } else {
+                element.classList.add('active');
+            }
         }
     });
 }
@@ -297,6 +311,8 @@ function showActionButtons(state) {
     const btnRelease = document.getElementById('btnRelease');
     const btnCancel = document.getElementById('btnCancel');
     
+    if (!btnOccupy || !btnRelease || !btnCancel) return;
+    
     btnOccupy.style.display = 'none';
     btnRelease.style.display = 'none';
     btnCancel.style.display = 'none';
@@ -313,13 +329,14 @@ function showActionButtons(state) {
 async function markOccupied() {
     const requestId = sessionStorage.getItem('requestId');
     try {
-        const response = await fetch(${API_BASE}/request/${requestId}/occupy, {
+        const response = await fetch(`${API_BASE}/request/${requestId}/occupy`, {  // ✅ Fixed: Added backticks
             method: 'POST'
         });
         if (!response.ok) throw new Error('Failed');
         showNotification('Marked as parked!', 'success');
         loadParkingStatus();
     } catch (error) {
+        console.error('Failed to mark occupied:', error);
         showNotification('Failed to update status', 'error');
     }
 }
@@ -327,7 +344,7 @@ async function markOccupied() {
 async function markReleased() {
     const requestId = sessionStorage.getItem('requestId');
     try {
-        const response = await fetch(${API_BASE}/request/${requestId}/release, {
+        const response = await fetch(`${API_BASE}/request/${requestId}/release`, {  // ✅ Fixed: Added backticks
             method: 'POST'
         });
         if (!response.ok) throw new Error('Failed');
@@ -337,6 +354,7 @@ async function markReleased() {
             location.reload();
         }, 2000);
     } catch (error) {
+        console.error('Failed to release:', error);
         showNotification('Failed to update status', 'error');
     }
 }
@@ -346,7 +364,7 @@ async function cancelParking() {
     
     const requestId = sessionStorage.getItem('requestId');
     try {
-        const response = await fetch(${API_BASE}/request/${requestId}/cancel, {
+        const response = await fetch(`${API_BASE}/request/${requestId}/cancel`, {  // ✅ Fixed: Added backticks
             method: 'POST'
         });
         if (!response.ok) throw new Error('Failed');
@@ -356,6 +374,7 @@ async function cancelParking() {
             location.reload();
         }, 2000);
     } catch (error) {
+        console.error('Failed to cancel:', error);
         showNotification('Failed to cancel', 'error');
     }
 }
