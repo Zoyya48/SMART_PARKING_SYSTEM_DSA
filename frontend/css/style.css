@@ -336,7 +336,7 @@ body {
 .vehicle-card:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
-    transform: translateY(-10px) scale(1.05);
+    transform: translateY(-10px) scale(1.1) rotate(2deg);B
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
 }
 
