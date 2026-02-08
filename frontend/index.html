@@ -3,217 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🅿️ Smart Parking - Find Your Perfect Spot</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <title>Smart Parking System - Lahore</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Floating Rollback Button (Always Visible) -->
-    <div class="floating-rollback" id="rollbackBtn" onclick="toggleRollbackMenu()">
-        <div class="rollback-icon">⏪</div>
-        <span class="rollback-text">Rollback</span>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="car-animation car1"></div>
+        <div class="car-animation car2"></div>
+        <div class="car-animation car3"></div>
     </div>
 
-    <!-- Rollback Menu -->
-    <div class="rollback-menu hidden" id="rollbackMenu">
-        <div class="rollback-header">
-            <h3>🔄 Rollback Operations</h3>
-            <button class="close-btn" onclick="toggleRollbackMenu()">×</button>
-        </div>
-        <div class="rollback-body">
-            <p class="info-text">Undo last operations (LIFO Stack)</p>
-            <div class="rollback-input-group">
-                <input type="number" id="rollbackCount" value="1" min="1" max="10" class="input-field">
-                <span class="input-label">operations</span>
+    <!-- SCREEN 1: Welcome -->
+    <div id="screen-welcome" class="screen active">
+        <div class="welcome-container">
+            <div class="parking-icon">
+                <div class="icon-glow"></div>
+                🅿️
             </div>
-            <button onclick="performRollback()" class="btn-rollback">⏪ Rollback</button>
-            <button onclick="viewStackHistory()" class="btn-secondary">📚 View History</button>
-            <div class="stack-info">
-                <span>Stack Size: <strong id="stackSizeDisplay">0</strong></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Live Updates Panel (Bottom Right) -->
-    <div class="live-panel" id="livePanel">
-        <div class="live-header" onclick="toggleLivePanel()">
-            <span class="live-indicator"></span>
-            <span>Live Updates</span>
-            <span class="toggle-arrow">▼</span>
-        </div>
-        <div class="live-content" id="liveContent">
-            <div class="live-stat">
-                <span>Active:</span>
-                <strong id="liveActive">0</strong>
-            </div>
-            <div class="live-stat">
-                <span>Queue:</span>
-                <strong id="liveQueue">0</strong>
-            </div>
-            <div class="live-stat">
-                <span>Completed:</span>
-                <strong id="liveCompleted">0</strong>
-            </div>
-        </div>
-    </div>
-
-    <!-- Step 1: Welcome Page -->
-    <section class="screen active" id="welcomeScreen">
-        <div class="animated-bg">
-            <div class="floating-car">🚗</div>
-            <div class="floating-car delay-1">🚙</div>
-            <div class="floating-car delay-2">🚕</div>
-        </div>
-        <div class="welcome-content">
-            <div class="logo-animation">
-                <div class="logo-circle">🅿️</div>
-            </div>
-            <h1 class="welcome-title">Smart Parking</h1>
-            <p class="welcome-subtitle">Find Your Perfect Parking Spot</p>
-            <div class="feature-tags">
-                <span class="tag">⚡ Real-time</span>
-                <span class="tag">🎯 Smart Allocation</span>
-                <span class="tag">📊 Live Tracking</span>
-            </div>
-            <div class="hero-stats">
-                <div class="stat-card">
-                    <div class="stat-number" id="availableSpots">-</div>
-                    <div class="stat-label">Available Spots</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="todayParked">-</div>
-                    <div class="stat-label">Parked Today</div>
-                </div>
-            </div>
-            <button class="btn-cta" onclick="nextScreen('vehicleTypeScreen')">
-                Get Started <span class="arrow">→</span>
+            <h1 class="main-title">Smart Parking System</h1>
+            <p class="subtitle">Lahore's Premier Parking Solution</p>
+            <p class="tagline">Find and reserve your parking spot in seconds</p>
+            <button class="btn-primary" onclick="goToScreen('vehicle-type')">
+                Get Started →
             </button>
         </div>
-    </section>
+    </div>
 
-    <!-- Step 2: Select Vehicle Type -->
-    <section class="screen" id="vehicleTypeScreen">
-        <div class="screen-header">
-            <div class="step-indicator">Step 1 of 6</div>
-            <h2>Select Your Vehicle Type</h2>
-            <p>Choose your vehicle category</p>
+    <!-- SCREEN 2: Select Vehicle Type -->
+    <div id="screen-vehicle-type" class="screen">
+        <div class="step-indicator">Step 1 of 4</div>
+        <button class="btn-back" onclick="goToScreen('welcome')">← Back</button>
+        
+        <div class="screen-container">
+            <h2 class="screen-title">Select Vehicle Type</h2>
+            
+            <div class="vehicle-grid">
+                <div class="vehicle-card" onclick="selectVehicleType('Sedan')">
+                    <div class="vehicle-icon">🚗</div>
+                    <h3>Sedan</h3>
+                    <p>Compact & Standard</p>
+                </div>
+                
+                <div class="vehicle-card" onclick="selectVehicleType('SUV')">
+                    <div class="vehicle-icon">🚙</div>
+                    <h3>SUV</h3>
+                    <p>Sport Utility Vehicle</p>
+                </div>
+                
+                <div class="vehicle-card" onclick="selectVehicleType('Hatchback')">
+                    <div class="vehicle-icon">🚕</div>
+                    <h3>Hatchback</h3>
+                    <p>Small & Efficient</p>
+                </div>
+                
+                <div class="vehicle-card" onclick="selectVehicleType('Truck')">
+                    <div class="vehicle-icon">🚚</div>
+                    <h3>Truck</h3>
+                    <p>Large Vehicle</p>
+                </div>
+            </div>
         </div>
-        <div class="vehicle-type-grid">
-            <div class="vehicle-card" onclick="selectVehicleType('Car', '🚗')">
-                <div class="vehicle-icon">🚗</div>
-                <h3>Car</h3>
-                <p>Standard vehicle</p>
-            </div>
-            <div class="vehicle-card" onclick="selectVehicleType('SUV', '🚙')">
-                <div class="vehicle-icon">🚙</div>
-                <h3>SUV</h3>
-                <p>Large vehicle</p>
-            </div>
-            <div class="vehicle-card" onclick="selectVehicleType('Van', '🚐')">
-                <div class="vehicle-icon">🚐</div>
-                <h3>Van</h3>
-                <p>Commercial</p>
-            </div>
-            <div class="vehicle-card" onclick="selectVehicleType('Motorcycle', '🏍️')">
-                <div class="vehicle-icon">🏍️</div>
-                <h3>Motorcycle</h3>
-                <p>Two-wheeler</p>
-            </div>
-        </div>
-        <button class="btn-back" onclick="prevScreen('welcomeScreen')">← Back</button>
-    </section>
+    </div>
 
-    <!-- Step 3: Register Vehicle (Animated ID Card) -->
-    <section class="screen" id="registerScreen">
-        <div class="screen-header">
-            <div class="step-indicator">Step 2 of 6</div>
-            <h2>Register Your Vehicle</h2>
-            <p>Enter your vehicle details</p>
-        </div>
-        <div class="id-card-container">
-            <div class="id-card">
-                <div class="id-card-header">
-                    <span class="id-chip">💳</span>
-                    <span class="vehicle-type-display" id="vehicleTypeDisplay">🚗</span>
+    <!-- SCREEN 3: Enter Vehicle Details -->
+    <div id="screen-vehicle-details" class="screen">
+        <div class="step-indicator">Step 2 of 4</div>
+        <button class="btn-back" onclick="goToScreen('vehicle-type')">← Back</button>
+        
+        <div class="screen-container">
+            <h2 class="screen-title">Enter Vehicle Details</h2>
+            
+            <div class="floating-cards">
+                <div class="id-card"></div>
+                <div class="id-card"></div>
+                <div class="id-card"></div>
+            </div>
+            
+            <div class="form-container">
+                <div class="selected-vehicle-badge">
+                    <span>Selected Vehicle:</span>
+                    <span id="selectedVehicleType" class="vehicle-type-badge">Sedan</span>
                 </div>
-                <div class="id-card-body">
-                    <div class="form-group">
-                        <label>Vehicle Number</label>
-                        <input type="text" id="vehicleNumber" placeholder="e.g., LHE-1234" 
-                               class="input-field" oninput="updateIDCard()">
-                    </div>
-                    <div class="form-group">
-                        <label>Owner Name</label>
-                        <input type="text" id="ownerName" placeholder="Your name" 
-                               class="input-field" oninput="updateIDCard()">
-                    </div>
-                    <div class="form-group">
-                        <label>Preferred Zone</label>
-                        <select id="preferredZone" class="input-field" onchange="updateIDCard()">
-                            <option value="">Select Zone</option>
-                            <option value="ZONE_A">Downtown</option>
-                            <option value="ZONE_B">Uptown</option>
-                            <option value="ZONE_C">Suburbs</option>
-                            <option value="ZONE_D">Industrial</option>
-                        </select>
-                    </div>
+                
+                <div class="form-group">
+                    <label>Vehicle Registration Number</label>
+                    <input 
+                        type="text" 
+                        id="vehicleId" 
+                        placeholder="e.g., LHE-1234" 
+                        class="input-field"
+                        onkeyup="this.value = this.value.toUpperCase()"
+                    >
+                    <p class="input-hint">Enter your vehicle's license plate number</p>
                 </div>
-                <div class="id-card-footer">
-                    <div class="preview-info">
-                        <div><strong id="previewNumber">---</strong></div>
-                        <div><small id="previewName">---</small></div>
-                    </div>
-                </div>
+                
+                <button class="btn-primary" onclick="registerVehicle()">
+                    Continue →
+                </button>
             </div>
         </div>
-        <div class="button-group">
-            <button class="btn-back" onclick="prevScreen('vehicleTypeScreen')">← Back</button>
-            <button class="btn-continue" onclick="submitRegistration()">Register →</button>
-        </div>
-    </section>
+    </div>
 
-    <!-- Step 4: Select Zone (Animated Flying Zones) -->
-    <section class="screen" id="zoneScreen">
-        <div class="screen-header">
-            <div class="step-indicator">Step 3 of 6</div>
-            <h2>Choose Your Zone</h2>
-            <p>Select the area closest to your destination</p>
-        </div>
-        <div class="zones-container">
-            <div class="zone-background">
-                <div class="zone-particle"></div>
-                <div class="zone-particle"></div>
-                <div class="zone-particle"></div>
+    <!-- SCREEN 4: Select Parking Zone -->
+    <div id="screen-zone-selection" class="screen">
+        <div class="step-indicator">Step 3 of 4</div>
+        <button class="btn-back" onclick="goToScreen('vehicle-details')">← Back</button>
+        
+        <div class="screen-container">
+            <h2 class="screen-title">Select Parking Zone</h2>
+            
+            <div class="vehicle-info-card">
+                <div class="info-row">
+                    <span>Vehicle:</span>
+                    <span id="vehicleInfoType">Sedan</span>
+                </div>
+                <div class="info-row">
+                    <span>ID:</span>
+                    <span id="vehicleInfoId">LHE345</span>
+                </div>
             </div>
-            <div class="zone-grid" id="zoneGrid">
-                <!-- Zones loaded dynamically -->
+            
+            <div class="zones-container" id="zonesContainer">
+                <!-- Zones will be loaded dynamically -->
+                <div class="loading-spinner">Loading zones...</div>
             </div>
         </div>
-        <button class="btn-back" onclick="prevScreen('registerScreen')">← Back</button>
-    </section>
+    </div>
 
-    <!-- Step 5: Choose Parking Spot -->
-    <section class="screen" id="spotScreen">
-        <div class="screen-header">
-            <div class="step-indicator">Step 4 of 6</div>
-            <h2>Choose Your Spot</h2>
-            <p class="zone-name-display" id="selectedZoneName">Parking Area</p>
-        </div>
-        <div class="parking-container">
-            <div class="parking-entrance">
-                <div class="entrance-sign">ENTRANCE ↓</div>
+    <!-- SCREEN 5: Choose Your Spot -->
+    <div id="screen-slot-selection" class="screen">
+        <div class="step-indicator">Step 4 of 4</div>
+        <button class="btn-back" onclick="goToScreen('zone-selection')">← Back</button>
+        
+        <div class="screen-container">
+            <h2 class="screen-title">Choose Your Spot</h2>
+            
+            <div class="zone-title-card" id="zoneTitleCard">
+                <h3>Defence Parking Area</h3>
             </div>
-            <div class="parking-lot">
-                <div class="parking-grid" id="parkingGrid">
-                    <!-- Parking spots loaded dynamically -->
-                </div>
-                <div class="animated-vehicle" id="animatedVehicle">
-                    <span id="vehicleEmoji">🚗</span>
-                </div>
-            </div>
-            <div class="spot-legend">
+            
+            <div class="availability-legend">
                 <div class="legend-item">
                     <div class="legend-box available"></div>
                     <span>Available</span>
@@ -222,190 +152,156 @@
                     <div class="legend-box occupied"></div>
                     <span>Occupied</span>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-box selected"></div>
-                    <span>Selected</span>
-                </div>
+            </div>
+            
+            <div class="slots-grid" id="slotsGrid">
+                <!-- Slots will be loaded dynamically -->
             </div>
         </div>
-        <div class="button-group">
-            <button class="btn-back" onclick="prevScreen('zoneScreen')">← Back</button>
-            <button class="btn-continue" id="confirmSpotBtn" disabled onclick="confirmSpot()">
-                Confirm Spot →
+    </div>
+
+    <!-- SCREEN 6: Parking Animation -->
+    <div id="screen-parking-animation" class="screen">
+        <div class="animation-container">
+            <div class="parking-car-animation">
+                🚗
+            </div>
+            <h2 class="animation-text">Parking your vehicle...</h2>
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 7: Parking Confirmed -->
+    <div id="screen-confirmation" class="screen">
+        <div class="confirmation-container">
+            <div class="success-icon">
+                <div class="checkmark-circle">
+                    <div class="checkmark"></div>
+                </div>
+            </div>
+            
+            <h2 class="confirmation-title">Parking Confirmed!</h2>
+            
+            <div class="ticket-card">
+                <div class="ticket-header">
+                    <h3>Parking Ticket</h3>
+                    <span class="ticket-id" id="ticketId">PRK-LHE-446903</span>
+                </div>
+                
+                <div class="ticket-details">
+                    <div class="ticket-row">
+                        <span class="ticket-label">Vehicle Type</span>
+                        <span class="ticket-value" id="ticketVehicleType">Sedan</span>
+                    </div>
+                    <div class="ticket-row">
+                        <span class="ticket-label">Registration</span>
+                        <span class="ticket-value" id="ticketRegistration">LHE345</span>
+                    </div>
+                    <div class="ticket-row">
+                        <span class="ticket-label">Zone</span>
+                        <span class="ticket-value" id="ticketZone">Defence</span>
+                    </div>
+                    <div class="ticket-row">
+                        <span class="ticket-label">Slot Number</span>
+                        <span class="ticket-value" id="ticketSlot">Slot 1</span>
+                    </div>
+                    <div class="ticket-row">
+                        <span class="ticket-label">Check-in Time</span>
+                        <span class="ticket-value" id="ticketTime">Jan 31, 2025, 3:17 PM</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="confirmation-actions">
+                <button class="btn-secondary" onclick="leaveParkingConfirm()">
+                    Leave Parking
+                </button>
+                <button class="btn-primary" onclick="goToScreen('welcome')">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Leave Parking Confirmation -->
+    <div id="modal-leave-parking" class="modal">
+        <div class="modal-content">
+            <h3>Leave Parking?</h3>
+            <p>Are you sure you want to end your parking session and free the slot?</p>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal()">No, Keep It</button>
+                <button class="btn-danger" onclick="leaveParking()">Yes, Leave</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN: Leave Parking Animation -->
+    <div id="screen-leave-animation" class="screen">
+        <div class="animation-container">
+            <div class="leaving-car-animation">
+                🚗
+            </div>
+            <h2 class="animation-text">Releasing parking spot...</h2>
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN: Leave Success -->
+    <div id="screen-leave-success" class="screen">
+        <div class="confirmation-container">
+            <div class="success-icon">
+                <div class="checkmark-circle green">
+                    <div class="checkmark"></div>
+                </div>
+            </div>
+            
+            <h2 class="confirmation-title">Parking Ended!</h2>
+            
+            <div class="ticket-card">
+                <div class="ticket-header">
+                    <h3>Session Summary</h3>
+                </div>
+                
+                <div class="ticket-details">
+                    <div class="ticket-row">
+                        <span class="ticket-label">Vehicle</span>
+                        <span class="ticket-value" id="leaveVehicleId">LHE-1234</span>
+                    </div>
+                    <div class="ticket-row">
+                        <span class="ticket-label">Zone</span>
+                        <span class="ticket-value" id="leaveZone">Defence</span>
+                    </div>
+                    <div class="ticket-row">
+                        <span class="ticket-label">Slot</span>
+                        <span class="ticket-value" id="leaveSlot">Slot 1</span>
+                    </div>
+                    <div class="ticket-row">
+                        <span class="ticket-label">Status</span>
+                        <span class="ticket-value status-released">Released ✓</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-primary" onclick="resetApp()">
+                Back to Home
             </button>
         </div>
-    </section>
-
-    <!-- Step 6: Success + State Machine + Live Tracking -->
-    <section class="screen" id="successScreen">
-        <div class="success-animation">
-            <div class="check-circle">
-                <svg class="checkmark" viewBox="0 0 52 52">
-                    <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
-                    <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-                </svg>
-            </div>
-        </div>
-        <h1 class="success-title">Parking Reserved!</h1>
-        <p class="success-subtitle">You're all set to park</p>
-
-        <!-- Parking Ticket -->
-        <div class="ticket">
-            <div class="ticket-header">
-                <h3>🎫 Parking Ticket</h3>
-                <div class="ticket-id" id="ticketId">---</div>
-            </div>
-            <div class="ticket-body">
-                <div class="ticket-row">
-                    <span>Vehicle:</span>
-                    <strong id="ticketVehicle">---</strong>
-                </div>
-                <div class="ticket-row">
-                    <span>Zone:</span>
-                    <strong id="ticketZone">---</strong>
-                </div>
-                <div class="ticket-row">
-                    <span>Spot:</span>
-                    <strong id="ticketSpot">---</strong>
-                </div>
-                <div class="ticket-row">
-                    <span>Time:</span>
-                    <strong id="ticketTime">---</strong>
-                </div>
-            </div>
-            <div class="ticket-qr">
-                <div class="qr-code">📱</div>
-            </div>
-        </div>
-
-        <!-- State Machine Lifecycle -->
-        <div class="state-machine">
-            <h3>Journey Status</h3>
-            <div class="journey-track">
-                <div class="journey-step completed" id="stepRequested">
-                    <div class="step-circle">1</div>
-                    <div class="step-label">Reserved</div>
-                </div>
-                <div class="journey-line"></div>
-                <div class="journey-step active" id="stepAllocated">
-                    <div class="step-circle">2</div>
-                    <div class="step-label">Confirmed</div>
-                </div>
-                <div class="journey-line"></div>
-                <div class="journey-step" id="stepOccupied">
-                    <div class="step-circle">3</div>
-                    <div class="step-label">Parked</div>
-                </div>
-                <div class="journey-line"></div>
-                <div class="journey-step" id="stepReleased">
-                    <div class="step-circle">4</div>
-                    <div class="step-label">Complete</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Live Status Panel -->
-        <div class="status-panel">
-            <div class="status-header">
-                <span class="status-badge" id="statusBadge">CONFIRMED</span>
-                <span class="status-timer" id="statusTimer">0 min</span>
-            </div>
-            <div class="status-actions">
-                <button class="btn-action" id="btnOccupy" onclick="markOccupied()">
-                    🔑 I've Parked
-                </button>
-                <button class="btn-action hidden" id="btnRelease" onclick="markReleased()">
-                    🚪 I'm Leaving
-                </button>
-                <button class="btn-action btn-cancel" onclick="cancelParking()">
-                    ❌ Cancel
-                </button>
-            </div>
-        </div>
-
-        <button class="btn-continue" onclick="nextScreen('analyticsScreen')">
-            View Analytics →
-        </button>
-    </section>
-
-    <!-- Step 7: Analytics Dashboard -->
-    <section class="screen" id="analyticsScreen">
-        <div class="screen-header">
-            <h2>📊 Analytics Dashboard</h2>
-            <p>System overview and statistics</p>
-        </div>
-        <div class="analytics-grid">
-            <div class="analytics-card">
-                <div class="card-icon">📝</div>
-                <div class="card-value" id="analyticsTotal">0</div>
-                <div class="card-label">Total Requests</div>
-            </div>
-            <div class="analytics-card">
-                <div class="card-icon">✅</div>
-                <div class="card-value" id="analyticsCompleted">0</div>
-                <div class="card-label">Completed</div>
-            </div>
-            <div class="analytics-card">
-                <div class="card-icon">❌</div>
-                <div class="card-value" id="analyticsCancelled">0</div>
-                <div class="card-label">Cancelled</div>
-            </div>
-            <div class="analytics-card">
-                <div class="card-icon">⏱️</div>
-                <div class="card-value" id="analyticsAvgTime">0</div>
-                <div class="card-label">Avg Duration (min)</div>
-            </div>
-        </div>
-
-        <!-- Zone Utilization -->
-        <div class="zone-utilization">
-            <h3>Zone Utilization</h3>
-            <div class="utilization-bars" id="utilizationBars">
-                <!-- Loaded dynamically -->
-            </div>
-        </div>
-
-        <!-- Live Requests Table -->
-        <div class="live-requests">
-            <h3>🔴 Live Requests</h3>
-            <div class="requests-table" id="requestsTable">
-                <!-- Loaded dynamically -->
-            </div>
-        </div>
-
-        <div class="button-group">
-            <button class="btn-secondary" onclick="prevScreen('successScreen')">← Back</button>
-            <button class="btn-cta" onclick="startNewBooking()">
-                New Booking
-            </button>
-        </div>
-    </section>
+    </div>
 
     <!-- Notification Toast -->
-    <div class="notification" id="notification">
-        <span class="notification-icon">ℹ️</span>
-        <span class="notification-text"></span>
-    </div>
+    <div id="notification" class="notification"></div>
 
     <!-- Loading Overlay -->
-    <div class="loading-overlay hidden" id="loadingOverlay">
-        <div class="loader">
-            <div class="car-loader">🚗</div>
-            <p>Loading...</p>
-        </div>
-    </div>
-
-    <!-- Stack History Modal -->
-    <div class="modal hidden" id="stackModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>📚 Stack History (LIFO)</h3>
-                <button class="close-btn" onclick="closeStackModal()">×</button>
-            </div>
-            <div class="modal-body" id="stackHistoryContent">
-                <!-- Loaded dynamically -->
-            </div>
-        </div>
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
     </div>
 
     <script src="js/script.js"></script>
